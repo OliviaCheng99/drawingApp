@@ -22,14 +22,11 @@ class SimpleViewModel :ViewModel() {
     }
     val points = _points as LiveData<MutableList<MyPoint>>
 
-    private val _selectedColor = MutableLiveData<String>("Red") // red as default
-    val selectedColor = _selectedColor as LiveData<String>
+    private var selectedColor = "Red" // red as default
 
-    private val _selectedSize = MutableLiveData<String>("5")
-    val selectedSize = _selectedSize as LiveData<String>
+    private var selectedSize = "5"
 
-    private val _selectedShape = MutableLiveData<String>("Circle")
-    val selectedShape = _selectedShape as LiveData<String>
+    private var selectedShape = "Circle"
 
     fun addPoint(point: PointF, color: Int, size: Float, shape: String) {
         _points.value?.add(MyPoint(point, color, size, shape))
@@ -37,17 +34,28 @@ class SimpleViewModel :ViewModel() {
     }
 
 
-    fun selectColor(color: String) {
-        _selectedColor.value = color
+    fun setColor(color: String) {
+        selectedColor = color
     }
 
-    fun selectSize(size: String){
-        _selectedSize.value = size
+    fun setSize(size: String){
+        selectedSize= size
     }
 
-    fun selectShape(shape:String){
-        _selectedShape.value = shape
+    fun setShape(shape:String){
+        selectedShape = shape
     }
 
+    fun getColor() : String{
+        return selectedColor
+    }
+
+    fun getSize() : String{
+        return selectedSize
+    }
+
+    fun getShape() : String{
+        return selectedShape
+    }
 
 }

@@ -23,7 +23,11 @@ class DrawFragment : Fragment() {
         val binding = FragmentDrawBinding.inflate(inflater)
 
         setupTouchListener(binding)
-        observeViewModelChanges(binding)
+
+        // observe the points
+        viewModel.points.observe(viewLifecycleOwner) { myPoints ->
+            binding.customView.drawPoints(myPoints)
+        }
 
         return binding.root
     }
@@ -33,9 +37,9 @@ class DrawFragment : Fragment() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                     val point = PointF(event.x, event.y)
-                    val color = toColor(viewModel.selectedColor.value ?: "Black")
-                    val size = viewModel.selectedSize.value?.toFloat() ?: 5.0f
-                    val shape = viewModel.selectedShape.value ?: "Circle"
+                    val color = toColor(viewModel.getColor())
+                    val size = viewModel.getSize().toFloat()
+                    val shape = viewModel.getShape()
 
                     viewModel.addPoint(point, color, size, shape)
                     true
@@ -45,19 +49,6 @@ class DrawFragment : Fragment() {
         }
     }
 
-    private fun observeViewModelChanges(binding: FragmentDrawBinding) {
-//        viewModel.selectedColor.observe(viewLifecycleOwner) { colorName ->
-//            binding.customView.setCurrentPaintColor(toColor(colorName))
-//        }
-//
-//        viewModel.selectedSize.observe(viewLifecycleOwner) { size ->
-//            binding.customView.setCurrentPaintSize(size?.toFloat() ?: 5.0f)
-//        }
-
-        viewModel.points.observe(viewLifecycleOwner) { myPoints ->
-            binding.customView.drawPoints(myPoints)
-        }
-    }
 
     private fun toColor(colorName: String): Int {
         return when (colorName) {

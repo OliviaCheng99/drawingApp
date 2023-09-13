@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.customviewdemo.databinding.FragmentClickBinding
 
@@ -38,9 +36,9 @@ class ClickFragment : Fragment() {
         setupSpinner(binding.spinnerShape, R.array.shape_array)
 
         // setup listerner for spinners
-        setSpinnerListener(binding.spinnerColor) { viewModel.selectColor(it) }
-        setSpinnerListener(binding.spinnerSize) { viewModel.selectSize(it) }
-        setSpinnerListener(binding.spinnerShape) { viewModel.selectShape(it) }
+        setSpinnerListener(binding.spinnerColor) { viewModel.setColor(it) }
+        setSpinnerListener(binding.spinnerSize) { viewModel.setSize(it) }
+        setSpinnerListener(binding.spinnerShape) { viewModel.setShape(it) }
 
         return binding.root
     }
