@@ -46,13 +46,13 @@ class DrawFragment : Fragment() {
     }
 
     private fun observeViewModelChanges(binding: FragmentDrawBinding) {
-        viewModel.selectedColor.observe(viewLifecycleOwner) { colorName ->
-            binding.customView.setCurrentPaintColor(toColor(colorName))
-        }
-
-        viewModel.selectedSize.observe(viewLifecycleOwner) { size ->
-            binding.customView.setCurrentPaintSize(size?.toFloat() ?: 5.0f)
-        }
+//        viewModel.selectedColor.observe(viewLifecycleOwner) { colorName ->
+//            binding.customView.setCurrentPaintColor(toColor(colorName))
+//        }
+//
+//        viewModel.selectedSize.observe(viewLifecycleOwner) { size ->
+//            binding.customView.setCurrentPaintSize(size?.toFloat() ?: 5.0f)
+//        }
 
         viewModel.points.observe(viewLifecycleOwner) { myPoints ->
             binding.customView.drawPoints(myPoints)

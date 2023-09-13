@@ -89,9 +89,9 @@ class CustomView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     // execute when custom view constructed
     init {
-        post {
+        post { // when the view is constructed and it has finished its layout, post bolck will be excecuted
             pendingPoints?.let {//not null and execute
-                drawPoints(it)
+                drawPoints(it)  // here the width and height are not 0
                 pendingPoints = null
             }
         }
@@ -116,11 +116,10 @@ class CustomView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun drawPoints(points: List<MyPoint>) {
-        if (width == 0 || height == 0) {
+        if (width == 0 || height == 0) { // first check the if the view's width and height. If 0, draw nothing
             pendingPoints = points
             return
         }
-
 //        ensureBitmap()
 
         for (myPoint in points) {
@@ -141,15 +140,15 @@ class CustomView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 }
             }
         }
-        invalidate()
+        invalidate() // notify that ondraw function should be called  to render the screen
     }
 
-    fun setCurrentPaintColor(color: Int) {
-        paint.color = color
-    }
-
-    fun setCurrentPaintSize(size: Float) {
-        paint.strokeWidth = size
-    }
+//    fun setCurrentPaintColor(color: Int) {
+//        paint.color = color
+//    }
+//
+//    fun setCurrentPaintSize(size: Float) {
+//        paint.strokeWidth = size
+//    }
 }
 

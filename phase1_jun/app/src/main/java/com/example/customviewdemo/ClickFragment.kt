@@ -49,7 +49,7 @@ class ClickFragment : Fragment() {
     private fun setupSpinner(spinner: Spinner, arrayResId: Int) {
         val adapter = ArrayAdapter.createFromResource(
             requireContext(), // get main activity from this fragment
-            arrayResId, // array id from string.xml under values package
+            arrayResId, // array id points to string.xml under values package
             android.R.layout.simple_spinner_item // layout for each item in spinner
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

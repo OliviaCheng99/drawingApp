@@ -33,7 +33,7 @@ class SimpleViewModel :ViewModel() {
 
     fun addPoint(point: PointF, color: Int, size: Float, shape: String) {
         _points.value?.add(MyPoint(point, color, size, shape))
-        _points.postValue(_points.value)
+        _points.value = _points.value // call set value just to notify
     }
 
 
