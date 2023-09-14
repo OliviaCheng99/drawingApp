@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ClickFragment">
+
+    <!-- Color Selector Label -->
+    <TextView
+        android:id="@+id/colorLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Choose Color:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Color Selector Spinner -->
+    <Spinner
+        android:id="@+id/spinner_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/colorLabel" />
+
+    <!-- Size Selector Label -->
+    <TextView
+        android:id="@+id/sizeLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Choose Brush Size:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_color" />
+
+    <!-- Size Selector Spinner -->
+    <Spinner
+        android:id="@+id/spinner_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sizeLabel" />
+
+    <!-- Shape Selector Label -->
+    <TextView
+        android:id="@+id/shapeLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Choose Shape:"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_size" />
+
+    <!-- Shape Selector Spinner -->
+    <Spinner
+        android:id="@+id/spinner_shape"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shapeLabel" />
+
+    <!-- Start Drawing Button -->
+    <Button
+        android:id="@+id/button_draw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="168dp"
+        android:text="Start to Draw"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_shape" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
