@@ -1,65 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.cs6018.phase1.DrawingView
-        android:id="@+id/drawingView"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/colorOptions" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav" />
 
-    <LinearLayout
-        android:id="@+id/colorOptions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnBlack"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Black" />
-
-        <Button
-            android:id="@+id/btnRed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Red" />
-
-        <Button
-            android:id="@+id/btnBlue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Blue" />
-
-        <Button
-            android:id="@+id/btnSmallBrush"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Small Brush" />
-
-        <Button
-            android:id="@+id/btnMediumBrush"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Medium Brush" />
-
-        <Button
-            android:id="@+id/btnLargeBrush"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Large Brush" />
-    </LinearLayout>
-
-</RelativeLayout>
+</FrameLayout>

@@ -13,5 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "phase1"
+rootProject.name = "customViewDemo"
 include(":app")
+ 

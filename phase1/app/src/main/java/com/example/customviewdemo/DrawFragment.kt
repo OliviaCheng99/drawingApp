@@ -1,5 +1,6 @@
 package com.example.customviewdemo
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -22,6 +23,7 @@ class DrawFragment : Fragment() {
     ): View {
         val binding = FragmentDrawBinding.inflate(inflater)
 
+        // setup touch listener
         setupTouchListener(binding)
 
         // observe the points
@@ -32,6 +34,7 @@ class DrawFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupTouchListener(binding: FragmentDrawBinding) {
         binding.customView.setOnTouchListener { _, event ->
             when (event.action) {
