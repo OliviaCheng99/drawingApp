@@ -3,8 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/clickFragment">
+    app:startDestination="@+id/mainFragment">
 
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.customviewdemo.MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_to_clickFragment"
+            app:destination="@id/clickFragment" />
+        <action
+            android:id="@+id/action_to_drawingListFragment"
+            app:destination="@id/drawingListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/clickFragment"
         android:name="com.example.customviewdemo.ClickFragment"
@@ -18,4 +29,11 @@
         android:id="@+id/drawFragment"
         android:name="com.example.customviewdemo.DrawFragment"
         tools:layout="@layout/fragment_draw" />
+
+    <fragment
+        android:id="@+id/drawingListFragment"
+        android:name="com.example.customviewdemo.DrawingListFragment"
+        tools:layout="@layout/fragment_drawing_list">
+    </fragment>
+
 </navigation>

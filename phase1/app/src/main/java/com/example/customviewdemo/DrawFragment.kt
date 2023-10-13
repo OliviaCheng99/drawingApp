@@ -1,6 +1,8 @@
 package com.example.customviewdemo
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
@@ -9,8 +11,13 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.customviewdemo.databinding.FragmentDrawBinding
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class DrawFragment : Fragment() {
@@ -26,9 +33,25 @@ class DrawFragment : Fragment() {
         // setup touch listener
         setupTouchListener(binding)
 
+        // clear previous points
+        viewModel.points.value?.clear()
+
         // observe the points
         viewModel.points.observe(viewLifecycleOwner) { myPoints ->
             binding.customView.drawPoints(myPoints)
+        }
+
+        // Set up the Save Drawing button
+        binding.saveDrawingButton.setOnClickListener {
+            // Generate a unique filename for each drawing, or use a naming convention of your choice
+            val filename = "drawing_${System.currentTimeMillis()}.png"
+            val filePath = binding.customView.saveDrawingToInternalStorage(filename)
+
+            if (filePath != null) {
+                Toast.makeText(requireContext(), "Drawing saved successfully!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Error saving drawing!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root
@@ -62,8 +85,3 @@ class DrawFragment : Fragment() {
         }
     }
 }
-
-
-
-
-

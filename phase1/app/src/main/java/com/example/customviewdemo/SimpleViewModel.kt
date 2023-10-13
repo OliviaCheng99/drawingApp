@@ -33,7 +33,6 @@ class SimpleViewModel :ViewModel() {
         _points.value = _points.value // call set value just to notify
     }
 
-
     fun setColor(color: String) {
         selectedColor = color
     }

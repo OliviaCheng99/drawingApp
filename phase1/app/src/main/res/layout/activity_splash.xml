@@ -5,7 +5,7 @@
     android:background="@drawable/splash_background"
     android:gravity="center">
 
-    <!-- Your app logo -->
+    <!-- app logo -->
     <ImageView
         android:layout_width="321dp"
         android:layout_height="365dp"
