@@ -1,0 +1,73 @@
+# 2023-09-14T03:04:08.020Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 1
+}
+test_status: FAILED
+test_result {
+  test_case {
+    test_class: "YourViewModelTest"
+    test_package: "com.example.customviewdemo"
+    test_method: "addPointTest"
+    start_time {
+      seconds: 1694660647
+      nanos: 509000000
+    }
+    end_time {
+      seconds: 1694660647
+      nanos: 531000000
+    }
+  }
+  test_status: FAILED
+  error {
+    error_message: "java.lang.IllegalStateException: Cannot invoke setValue on a background thread\nat androidx.lifecycle.LiveData.assertMainThread(LiveData.java:502)\nat androidx.lifecycle.LiveData.setValue(LiveData.java:306)\nat androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)\nat com.example.customviewdemo.SimpleViewModel.<init>(SimpleViewModel.kt:21)\nat com.example.customviewdemo.YourViewModelTest.setUp(ExampleInstrumentedTest.kt:33)"
+    error_type: "java.lang.IllegalStateException"
+    stack_trace: "java.lang.IllegalStateException: Cannot invoke setValue on a background thread\nat androidx.lifecycle.LiveData.assertMainThread(LiveData.java:502)\nat androidx.lifecycle.LiveData.setValue(LiveData.java:306)\nat androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)\nat com.example.customviewdemo.SimpleViewModel.<init>(SimpleViewModel.kt:21)\nat com.example.customviewdemo.YourViewModelTest.setUp(ExampleInstrumentedTest.kt:33)"
+  }
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/Users/tacodaddy/drawingApp/phase1_jun/app/build/outputs/androidTest-results/connected/debug/Pixel_5_API_33(AVD) - 13/logcat-com.example.customviewdemo.YourViewModelTest-addPointTest.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/Users/tacodaddy/drawingApp/phase1_jun/app/build/outputs/androidTest-results/connected/debug/Pixel_5_API_33(AVD) - 13/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/Users/tacodaddy/drawingApp/phase1_jun/app/build/outputs/androidTest-results/connected/debug/Pixel_5_API_33(AVD) - 13/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/Users/tacodaddy/drawingApp/phase1_jun/app/build/outputs/androidTest-results/connected/debug/Pixel_5_API_33(AVD) - 13/cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "/Users/tacodaddy/drawingApp/phase1_jun/app/build/outputs/androidTest-results/connected/debug/Pixel_5_API_33(AVD) - 13/testlog/test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

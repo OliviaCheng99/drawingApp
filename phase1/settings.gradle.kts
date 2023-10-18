@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "customViewDemo"
+rootProject.name = "drawApp"
 include(":app")
  

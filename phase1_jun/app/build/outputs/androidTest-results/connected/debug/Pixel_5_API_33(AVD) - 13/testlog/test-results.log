@@ -1,0 +1,48 @@
+INSTRUMENTATION_STATUS: class=com.example.customviewdemo.YourViewModelTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.example.customviewdemo.YourViewModelTest:
+INSTRUMENTATION_STATUS: test=addPointTest
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.example.customviewdemo.YourViewModelTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalStateException: Cannot invoke setValue on a background thread
+at androidx.lifecycle.LiveData.assertMainThread(LiveData.java:502)
+at androidx.lifecycle.LiveData.setValue(LiveData.java:306)
+at androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)
+at com.example.customviewdemo.SimpleViewModel.<init>(SimpleViewModel.kt:21)
+at com.example.customviewdemo.YourViewModelTest.setUp(ExampleInstrumentedTest.kt:33)
+
+INSTRUMENTATION_STATUS: stream=
+Error in addPointTest(com.example.customviewdemo.YourViewModelTest):
+java.lang.IllegalStateException: Cannot invoke setValue on a background thread
+at androidx.lifecycle.LiveData.assertMainThread(LiveData.java:502)
+at androidx.lifecycle.LiveData.setValue(LiveData.java:306)
+at androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)
+at com.example.customviewdemo.SimpleViewModel.<init>(SimpleViewModel.kt:21)
+at com.example.customviewdemo.YourViewModelTest.setUp(ExampleInstrumentedTest.kt:33)
+
+INSTRUMENTATION_STATUS: test=addPointTest
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 0.011
+There was 1 failure:
+1) addPointTest(com.example.customviewdemo.YourViewModelTest)
+java.lang.IllegalStateException: Cannot invoke setValue on a background thread
+at androidx.lifecycle.LiveData.assertMainThread(LiveData.java:502)
+at androidx.lifecycle.LiveData.setValue(LiveData.java:306)
+at androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)
+at com.example.customviewdemo.SimpleViewModel.<init>(SimpleViewModel.kt:21)
+at com.example.customviewdemo.YourViewModelTest.setUp(ExampleInstrumentedTest.kt:33)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1
+

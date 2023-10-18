@@ -7,7 +7,8 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.customviewdemo.MainFragment"
+        android:name="com.example.drawApp.MainFragment"
+        android:label="Home"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_to_clickFragment"
@@ -18,7 +19,8 @@
     </fragment>
     <fragment
         android:id="@+id/clickFragment"
-        android:name="com.example.customviewdemo.ClickFragment"
+        android:name="com.example.drawApp.ClickFragment"
+        android:label="Options"
         tools:layout="@layout/fragment_click">
         <action
             android:id="@+id/action_clickFragment_to_drawFragment"
@@ -27,12 +29,14 @@
 
     <fragment
         android:id="@+id/drawFragment"
-        android:name="com.example.customviewdemo.DrawFragment"
+        android:name="com.example.drawApp.DrawFragment"
+        android:label="Canvas"
         tools:layout="@layout/fragment_draw" />
 
     <fragment
         android:id="@+id/drawingListFragment"
-        android:name="com.example.customviewdemo.DrawingListFragment"
+        android:name="com.example.drawApp.DrawingListFragment"
+        android:label="Savings"
         tools:layout="@layout/fragment_drawing_list">
     </fragment>
 

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.example.customviewdemo.YourViewModelTest" tests="1" failures="1" errors="0" skipped="0" time="0.447" timestamp="2023-09-14T03:04:07" hostname="localhost">
+  <properties>
+    <property name="device" value="Pixel_5_API_33(AVD) - 13" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="addPointTest" classname="com.example.customviewdemo.YourViewModelTest" time="0.012">
+    <failure>java.lang.IllegalStateException: Cannot invoke setValue on a background thread
+at androidx.lifecycle.LiveData.assertMainThread(LiveData.java:502)
+at androidx.lifecycle.LiveData.setValue(LiveData.java:306)
+at androidx.lifecycle.MutableLiveData.setValue(MutableLiveData.java:50)
+at com.example.customviewdemo.SimpleViewModel.&lt;init&gt;(SimpleViewModel.kt:21)
+at com.example.customviewdemo.YourViewModelTest.setUp(ExampleInstrumentedTest.kt:33)</failure>
+  </testcase>
+</testsuite>

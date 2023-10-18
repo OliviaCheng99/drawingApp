@@ -2,20 +2,28 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.example.customviewdemo"
-    compileSdk = 33
+    namespace = "com.example.drawApp"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.customviewdemo"
+        applicationId = "com.example.drawApp"
         minSdk = 33
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+//        configurations.all {
+//            resolutionStrategy {
+//                force("androidx.emoji2:emoji2-views-helper:1.3.0")
+//                force("androidx.emoji2:emoji2:1.3.0")
+//            }
+//        } // code block to avoid some bugs? https://issuetracker.google.com/issues/295457468
     }
 
     buildTypes {
@@ -38,6 +46,16 @@ android {
     buildFeatures{
         dataBinding = true
         viewBinding = true
+        compose = true // for compose view
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
@@ -48,7 +66,10 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.1")
-    implementation("androidx.compose.ui:ui-graphics-android:1.5.1")
+    implementation("androidx.core:core-animation:1.0.0-rc01")
+    implementation("androidx.room:room-common:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.annotation:annotation:1.7.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -60,8 +81,24 @@ dependencies {
     //Fragment stuff
     implementation("androidx.fragment:fragment-ktx:1.6.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
-    //navigation stuff
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation( "androidx.navigation:navigation-ui-ktx:2.3.5")
+
+    // compose stuff
+    implementation("androidx.compose.ui:ui-tooling-android:1.5.3")
+    implementation("androidx.compose.material:material-android:1.5.3")
+    implementation("androidx.compose.ui:ui-graphics-android:1.5.3")
+    implementation("androidx.compose.ui:ui-android:1.5.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+
+    // navigation stuff
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3") // stable version
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+
+    // Room stuff
+    ksp("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-common:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.room:room-runtime:2.5.2")
+
 
 }
