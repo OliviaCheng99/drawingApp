@@ -55,6 +55,22 @@ class DrawFragment : Fragment() {
             }
         }
 
+
+        binding.saveDrawingButton.setOnClickListener {
+            val filename = "drawing_${System.currentTimeMillis()}.png"
+            val filePath = binding.customView.saveDrawingToInternalStorage(filename)
+
+            val messageResId = if (filePath != null) {
+                viewModel.addDrawing(filename, filePath)
+                R.string.drawing_saved_successfully
+            } else {
+                R.string.error_saving_drawing
+            }
+
+            Toast.makeText(requireContext(), getString(messageResId), Toast.LENGTH_SHORT).show()
+        }
+
+
         return binding.root
     }
 
