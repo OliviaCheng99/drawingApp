@@ -70,6 +70,8 @@ dependencies {
     implementation("androidx.room:room-common:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
     implementation("androidx.annotation:annotation:1.7.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    implementation("androidx.fragment:fragment-testing:1.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -99,6 +101,19 @@ dependencies {
     implementation("androidx.room:room-common:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
     implementation("androidx.room:room-runtime:2.5.2")
+
+
+    // JUnit
+    testImplementation ("junit:junit:4.13.2")
+
+    // Android Testing Support Library
+    androidTestImplementation ("androidx.test:runner:1.4.0")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
+    // Add other dependencies if needed
+    androidTestImplementation ("androidx.test:core:1.4.0")
+    androidTestImplementation ("androidx.arch.core:core-testing:2.1.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.3")
+
 
 
 }
