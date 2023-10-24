@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -43,7 +45,7 @@ android {
         jvmTarget = "1.8"
     }
 
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
         viewBinding = true
         compose = true // for compose view
@@ -61,14 +63,14 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.2")
     implementation("androidx.core:core-animation:1.0.0-rc01")
-    implementation("androidx.room:room-common:2.5.2")
-    implementation("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.room:room-common:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
     implementation("androidx.annotation:annotation:1.7.0")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
 
@@ -79,50 +81,52 @@ dependencies {
 //    androidTestImplementation("androidx.test.ext:junit:1.1.5")
 //    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 //    testImplementation("androidx.room:room-testing:2.6.0")
-    implementation("org.mockito:mockito-core:5.3.1")
-    testImplementation( "org.mockito:mockito-core:4.0.0")
+    implementation("org.mockito:mockito-core:5.6.0")
+    testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    androidTestImplementation("org.mockito:mockito-android:2.25.0")
-//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    androidTestImplementation("org.mockito:mockito-android:5.6.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
-    val coroutinesVersion = "1.3.0-M1"
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
+    val coroutinesVersion = "1.7.3"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
 
-    testImplementation ("org.hamcrest:hamcrest-library:2.1")
+    testImplementation("org.hamcrest:hamcrest-library:2.2")
 //    testImplementation ("org.mockito:mockito-core:2.25.0")
-
-    testImplementation ("junit:junit:4.12")
-    androidTestImplementation("androidx.test:runner:1.2.0")
-    androidTestImplementation("androidx.test:rules:1.2.0")
-
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+// Additional dependencies for Jetpack Compose UI testing
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
+// Dependencies for Fragment testing
+    androidTestImplementation("androidx.fragment:fragment-testing:1.6.1")
+// Mockito for Android to mock Android-specific classes (like ViewModel)
+    androidTestImplementation("org.mockito:mockito-android:5.6.0")
 
     //to get livedata + viewmodel stuff
-    implementation("androidx.activity:activity-ktx:1.7.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.activity:activity-ktx:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     //Fragment stuff
     implementation("androidx.fragment:fragment-ktx:1.6.1")
 
     // compose stuff
-    implementation("androidx.compose.ui:ui-tooling-android:1.5.3")
-    implementation("androidx.compose.material:material-android:1.5.3")
-    implementation("androidx.compose.ui:ui-graphics-android:1.5.3")
-    implementation("androidx.compose.ui:ui-android:1.5.3")
+    implementation("androidx.compose.ui:ui-tooling-android:1.5.4")
+    implementation("androidx.compose.material:material-android:1.5.4")
+    implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
+    implementation("androidx.compose.ui:ui-android:1.5.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
     // navigation stuff
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3") // stable version
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4") // stable version
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
     // Room stuff
-    ksp("androidx.room:room-compiler:2.5.2")
-    implementation("androidx.room:room-common:2.5.2")
-    implementation("androidx.room:room-ktx:2.5.2")
-    implementation("androidx.room:room-runtime:2.5.2")
-
-
+    ksp("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-common:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.room:room-runtime:2.6.0")
 }

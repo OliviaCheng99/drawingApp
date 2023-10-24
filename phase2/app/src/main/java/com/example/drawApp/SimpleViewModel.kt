@@ -16,7 +16,7 @@ data class DrawingPath (
     val strokeWidth: Float,
 )
 
-class SimpleViewModel(private val repo: DrawingRepo) :ViewModel() {
+class SimpleViewModel(private val repo: Repo) :ViewModel() {
 
     val allDrawings : LiveData<List<DrawData>> = repo.allDrawings
 
