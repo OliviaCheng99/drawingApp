@@ -6,9 +6,9 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 
-class DrawingRepo(val scope: CoroutineScope, val dao: DrawDao) {
-    val allDrawings = dao.getAllDrawings().asLiveData()
-    fun addDrawingToDB(filename: String, filepath: String){
+class DrawingRepo(val scope: CoroutineScope, val dao: DrawDao): Repo {
+    override val allDrawings = dao.getAllDrawings().asLiveData()
+    override fun addDrawingToDB(filename: String, filepath: String){
         scope.launch {
             dao.addDrawData(
                 DrawData(timestamp = Date(), filepath = filepath, filename = filename)
