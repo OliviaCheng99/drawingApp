@@ -1,34 +1,47 @@
 package com.example.drawApp
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Path
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +52,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.drawApp.databinding.FragmentDrawBinding
+import kotlinx.coroutines.launch
 
 
 class DrawFragment : Fragment() {
@@ -48,6 +63,15 @@ class DrawFragment : Fragment() {
         SimpleViewModelFactory((requireContext().applicationContext as DrawingApplication).drawingRepo)}
 
     private lateinit var binding: FragmentDrawBinding
+
+    private val pickImageResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            val imageStream = context?.contentResolver?.openInputStream(it)
+            val selectedImageBitmap = BitmapFactory.decodeStream(imageStream)
+            binding.customView.setImageBitmap(selectedImageBitmap)
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,19 +100,47 @@ class DrawFragment : Fragment() {
             }
         }
 
-        binding.saveDrawingButton.setContent {
-            SaveButton{
-                // Generate a unique filename for each drawing, or use a naming convention of your choice
-                val filename = "drawing_${System.currentTimeMillis()}.png"
-                // add drawing to local storage
-                val filePath = binding.customView.saveDrawingToInternalStorage(filename)
+        binding.bottomButtonList.setContent {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    var isSaveDialogVisible by remember { mutableStateOf(false) }
+                    var imageNameToSave by remember { mutableStateOf("") }
 
-                if (filePath != null) {
-                    // push filename and file path to database
-                    viewModel.addDrawingToDB(filename, filePath)
-                    Toast.makeText(requireContext(), "Drawing saved successfully!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "Error saving drawing!", Toast.LENGTH_SHORT).show()
+                    if (isSaveDialogVisible) {
+                        SaveImageDialog(
+                            onDismiss = { isSaveDialogVisible = false },
+                            onConfirm = { name ->
+                                if (name.isNotEmpty()) {
+                                    val filePath = binding.customView.saveDrawingToInternalStorage("$name.png")
+                                    if (filePath != null) {
+                                        viewModel.addDrawingToDB("$name.png", filePath)
+                                    }
+                                    isSaveDialogVisible = false
+                                    Toast.makeText(requireContext(),"Saved Successfully!" ,Toast.LENGTH_SHORT).show()
+                                } else {
+                                    // handle invalid name case
+                                    Toast.makeText(requireContext(),"Please type something!" ,Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            name = imageNameToSave,
+                            onImageNameChange = { imageNameToSave = it }
+                        )
+                    }
+
+                    SaveButton {
+                      isSaveDialogVisible = true
+                    }
+                    ClearButton {
+                        binding.customView.clearDrawing()
+                        viewModel.clearPath()
+                    }
+                    MoreButton()
                 }
             }
         }
@@ -141,7 +193,7 @@ class DrawFragment : Fragment() {
                     modifier = Modifier
                         .size(40.dp)
                         .background(color)
-                        .clickable {viewModel.updateColor(color.toArgb())}
+                        .clickable { viewModel.updateColor(color.toArgb()) }
                         .border(
                             5.dp,
                             if (myColor == color) Color.DarkGray else Color.Transparent
@@ -191,40 +243,200 @@ class DrawFragment : Fragment() {
             onClick = onClick,
         ) {
             Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Save Image")
-            Text(text = "Save Image")
+            Text(text = "Save")
         }
     }
 
+    @Composable
+    fun ClearButton(onClick: () -> Unit) {
+        Button(
+            onClick = onClick,
+        ) {
+            Text(text = "Clear")
+        }
+    }
+
+
+    @Composable
+    fun MoreButton() {
+        var showMenu by remember { mutableStateOf(false) }
+
+        // if true, show menu
+        if (showMenu) {
+            CustomMenu(onDismiss = {
+                // when meue disapears, update state
+                showMenu = false
+            })
+        }
+
+        Button(onClick = { showMenu = true }) {
+            Text("More")
+        }
+    }
+
+    @Composable
+    fun CustomMenu(onDismiss: () -> Unit) {
+        // status，track whether the menu is opened
+        var expanded by remember { mutableStateOf(true) }
+
+        var isLoadDialogVisible by remember { mutableStateOf(false) }
+        var imageNameToLoad by remember { mutableStateOf("") }
+        val allDrawingData by viewModel.allDrawings.observeAsState()
+        val fileNames: List<String>? = allDrawingData?.map { it.filename }
+
+
+        if (isLoadDialogVisible) {
+            LoadImageDialog(
+                onDismiss = { isLoadDialogVisible = false },
+                onConfirm = { name ->
+                    if (name.isNotEmpty()) {
+                        val loadedBitmap = loadSingleSavedDrawing(fileNames, "$name.png")
+                        if (loadedBitmap!=null){
+                            binding.customView.setImageBitmap(loadedBitmap)
+                        }else {
+                            Toast.makeText(requireContext(),"Not Found!" ,Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        // handle invalid name case
+                        Toast.makeText(requireContext(),"Please type something!" ,Toast.LENGTH_SHORT).show()
+                    }
+                },
+                name = imageNameToLoad,
+                onImageNameChange = { imageNameToLoad = it }
+            )
+        }
+
+
+        Column {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Open menu",
+                modifier = Modifier.clickable { expanded = !expanded }
+            )
+
+            // show menu based on status
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                    onDismiss()
+                }
+            ) {
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        binding.customView.saveBitmapToGallery(requireContext())
+                    }
+                }) {
+                    Text("Save to Gallery")
+                }
+
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    viewModel.clearPath()
+                    try{
+                        pickImageResult.launch("image/*")
+                    } catch(e:Exception) {
+                        Log.e("custom view", "error setting images", e)
+                    }
+                }) {
+                    Text("Import From Gallery")
+                }
+
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    viewModel.clearPath()
+                    isLoadDialogVisible = true
+                }) {
+                    Text("Import From APP")
+                }
+
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    viewLifecycleOwner.lifecycleScope.launch {// maybe not necessary to handle it in coroutine here
+                        binding.customView.shareBitmap(requireContext())
+                    }
+                }) {
+                    Text("Share Images")
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun SaveImageDialog(
+        onDismiss: () -> Unit,
+        onConfirm: (String) -> Unit,
+        name: String,
+        onImageNameChange: (String) -> Unit
+    ) {
+        AlertDialog(
+            title = { Text(text = "Save Image") },
+            text = {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = onImageNameChange,
+                    label = { Text("Enter image name") }
+                )
+            },
+            confirmButton = {
+                Button(onClick = { onConfirm(name) }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                Button(onClick = onDismiss) {
+                    Text("Cancel")
+                }
+            },
+            onDismissRequest = onDismiss
+        )
+    }
+
+    @Composable
+    fun LoadImageDialog(
+        onDismiss: () -> Unit,
+        onConfirm: (String) -> Unit,
+        name: String,
+        onImageNameChange: (String) -> Unit
+    ) {
+        AlertDialog(
+            title = { Text(text = "Load Image") },
+            text = {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = onImageNameChange,
+                    label = { Text("Enter image name") }
+                )
+            },
+            confirmButton = {
+                Button(onClick = { onConfirm(name) }) {
+                    Text("Load")
+                }
+            },
+            dismissButton = {
+                Button(onClick = onDismiss) {
+                    Text("Cancel")
+                }
+            },
+            onDismissRequest = onDismiss
+        )
+    }
+
+    private fun loadSingleSavedDrawing(fileNames: List<String>?, target: String): Bitmap? {
+        if (!fileNames.isNullOrEmpty()) {
+            for (filename in fileNames) {
+                if (filename == target) {
+                    val fis = context?.openFileInput(filename)
+                    fis?.use {
+                        return BitmapFactory.decodeStream(it)
+                    }
+                }
+            }
+        }
+        return null
+    }
+
 }
-
-
-//    private fun toColor(colorName: String): Int {
-//        return when (colorName) {
-//            "Red" -> Color.RED
-//            "Blue" -> Color.BLUE
-//            "Green" -> Color.GREEN
-//            else -> Color.BLACK
-//        }
-//    }
-
-
-//
-//    @SuppressLint("ClickableViewAccessibility")
-//    private fun setupTouchListener(binding: FragmentDrawBinding) {
-//        binding.customView.setOnTouchListener { _, event ->
-//            when (event.action) {
-//                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-//                    val point = PointF(event.x, event.y)
-//                    val color = toColor(viewModel.getColor())
-//                    val size = viewModel.getSize().toFloat()
-//                    val shape = viewModel.getShape()
-//
-//                    viewModel.addPoint(point, color, size, shape)
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
-//    }
 
 
