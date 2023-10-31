@@ -69,7 +69,7 @@ class DrawingListFragment : Fragment() {
 
     private fun loadSavedDrawings(fileNames: List<String>?): List<Bitmap> {
         val bitmaps: MutableList<Bitmap> = mutableListOf()
-        if (fileNames != null && fileNames.isNotEmpty()) {
+        if (!fileNames.isNullOrEmpty()) {
             for (filename in fileNames) {
                 if (filename.endsWith(".png")) { // Only process PNG files
                     val fis = context?.openFileInput(filename)
