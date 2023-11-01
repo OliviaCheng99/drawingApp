@@ -19,7 +19,7 @@
 
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/saveDrawingButton"
+        android:id="@+id/bottom_button_list"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>
 

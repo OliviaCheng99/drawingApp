@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 
 data class DrawingPath (
     val path: Path,
-    val color: Int,
+    var color: Int,
     val strokeWidth: Float,
 )
 
@@ -48,6 +48,10 @@ class SimpleViewModel(private val repo: Repo) :ViewModel() {
 
     fun updatePath() {
         _paths.value = _paths.value
+    }
+
+    fun clearPath(){
+       _paths.value?.map { it.color = Color.Transparent.toArgb() }
     }
 
 }
