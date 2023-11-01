@@ -1,9 +1,14 @@
 package com.example.drawApp
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Path
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -35,8 +40,11 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
@@ -53,24 +62,28 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.cs6018.marbleemulator.mapSensorValueToDelta
 import com.example.drawApp.databinding.FragmentDrawBinding
 import kotlinx.coroutines.launch
 
 
 class DrawFragment : Fragment() {
 
-    private val viewModel: SimpleViewModel by activityViewModels{
-        SimpleViewModelFactory((requireContext().applicationContext as DrawingApplication).drawingRepo)}
+    private val viewModel: SimpleViewModel by activityViewModels {
+        SimpleViewModelFactory((requireContext().applicationContext as DrawingApplication).drawingRepo)
+    }
+
 
     private lateinit var binding: FragmentDrawBinding
 
-    private val pickImageResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            val imageStream = context?.contentResolver?.openInputStream(it)
-            val selectedImageBitmap = BitmapFactory.decodeStream(imageStream)
-            binding.customView.setImageBitmap(selectedImageBitmap)
+    private val pickImageResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                val imageStream = context?.contentResolver?.openInputStream(it)
+                val selectedImageBitmap = BitmapFactory.decodeStream(imageStream)
+                binding.customView.setImageBitmap(selectedImageBitmap)
+            }
         }
-    }
 
 
     override fun onCreateView(
@@ -82,11 +95,13 @@ class DrawFragment : Fragment() {
         // setup touch listener
         setupTouchListener(binding)
 
-        // make sure that all fragments use the same viewmodel
-//        Log.d("ClickFragment", "ViewModel hashcode: ${viewModel.hashCode()}
-
-
         binding.options.setContent {
+            val sensorManager =
+                requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+            val marblePosition: MutableState<Offset> = remember { mutableStateOf(Offset(0f, 0f)) }
+            var isGravityMode by remember { mutableStateOf(false) }
+            var gravityEventListener: SensorEventListener? by remember { mutableStateOf(null) }
+
             val color by viewModel.selectedColor.observeAsState()
             val stroke by viewModel.strokeWidth.observeAsState()
             Row(
@@ -94,8 +109,23 @@ class DrawFragment : Fragment() {
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically){
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 ColorPicker(myColor = Color(color!!))
+                SwitchDrawingModeButton(
+                    isGravityMode = isGravityMode,
+                    onSwitchMode = {
+                        isGravityMode = !isGravityMode
+                        if (isGravityMode) {
+                            gravityEventListener =
+                                setupGravitySensorForDrawing(
+                                    sensorManager = sensorManager,
+                                    marblePosition = marblePosition)
+                        } else {
+                            sensorManager.unregisterListener(gravityEventListener)
+                        }
+                    },
+                )
                 StrokePicker(myStroke = stroke!!)
             }
         }
@@ -117,15 +147,24 @@ class DrawFragment : Fragment() {
                             onDismiss = { isSaveDialogVisible = false },
                             onConfirm = { name ->
                                 if (name.isNotEmpty()) {
-                                    val filePath = binding.customView.saveDrawingToInternalStorage("$name.png")
+                                    val filePath =
+                                        binding.customView.saveDrawingToInternalStorage("$name.png")
                                     if (filePath != null) {
                                         viewModel.addDrawingToDB("$name.png", filePath)
                                     }
                                     isSaveDialogVisible = false
-                                    Toast.makeText(requireContext(),"Saved Successfully!" ,Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Saved Successfully!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
                                     // handle invalid name case
-                                    Toast.makeText(requireContext(),"Please type something!" ,Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Please type something!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             },
                             name = imageNameToSave,
@@ -134,7 +173,7 @@ class DrawFragment : Fragment() {
                     }
 
                     SaveButton {
-                      isSaveDialogVisible = true
+                        isSaveDialogVisible = true
                     }
                     ClearButton {
                         binding.customView.clearDrawing()
@@ -172,17 +211,64 @@ class DrawFragment : Fragment() {
                     viewModel.paths.value!!.last().path.lineTo(event.x, event.y)
                     viewModel.updatePath()
                 }
-                else -> false
             }
-                true
+            true
+        }
+    }
+
+    private fun setupGravitySensorForDrawing(
+        marblePosition: MutableState<Offset>,
+        sensorManager: SensorManager
+    ): SensorEventListener {
+        // Set up the gravity sensor for drawing
+
+        val gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
+        val gravityEventListener = object : SensorEventListener {
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+            override fun onSensorChanged(event: SensorEvent) {
+                val maxW = binding.customView.width.toFloat()
+                val maxH = binding.customView.height.toFloat()
+
+                if (viewModel.paths.value?.isEmpty()!!) {
+                    marblePosition.value = marblePosition.value.copy(
+                        maxW / 2,
+                        maxH / 2
+                    )
+                    val newPath = Path().apply { moveTo(maxW / 2, maxH / 2) }
+                    viewModel.addPath(newPath)
+                }
+
+                val x = event.values[0]
+                val y = event.values[1]
+
+                val deltaX = mapSensorValueToDelta(-x) // Note: x is negated here
+                val deltaY = mapSensorValueToDelta(y)
+
+                marblePosition.value = marblePosition.value.copy(
+                    x = (marblePosition.value.x + deltaX).coerceIn(0F, maxW),
+                    y = (marblePosition.value.y + deltaY).coerceIn(0F, maxH)
+                )
+
+                viewModel.paths.value!!.last().path.lineTo(marblePosition.value.x, marblePosition.value.y)
+                viewModel.updatePath()
             }
         }
+
+        sensorManager.registerListener(
+            gravityEventListener,
+            gravitySensor,
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+
+        return gravityEventListener
+    }
 
 
     @Composable
     fun ColorPicker(myColor: Color?) {
         // Sample colors for the picker
-        val colors = listOf(Color.Red,Color.Blue,Color.Green,Color.Black)
+        val colors = listOf(Color.Red, Color.Blue, Color.Green, Color.Black)
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -221,7 +307,7 @@ class DrawFragment : Fragment() {
     }
 
     @Composable
-    fun MyEraser(){
+    fun MyEraser() {
         Box(
             modifier = Modifier
                 .size(50.dp)
@@ -291,14 +377,19 @@ class DrawFragment : Fragment() {
                 onConfirm = { name ->
                     if (name.isNotEmpty()) {
                         val loadedBitmap = loadSingleSavedDrawing(fileNames, "$name.png")
-                        if (loadedBitmap!=null){
+                        if (loadedBitmap != null) {
                             binding.customView.setImageBitmap(loadedBitmap)
-                        }else {
-                            Toast.makeText(requireContext(),"Not Found!" ,Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Not Found!", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     } else {
                         // handle invalid name case
-                        Toast.makeText(requireContext(),"Please type something!" ,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Please type something!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
                 name = imageNameToLoad,
@@ -334,9 +425,9 @@ class DrawFragment : Fragment() {
                 DropdownMenuItem(onClick = {
                     expanded = false
                     viewModel.clearPath()
-                    try{
+                    try {
                         pickImageResult.launch("image/*")
-                    } catch(e:Exception) {
+                    } catch (e: Exception) {
                         Log.e("custom view", "error setting images", e)
                     }
                 }) {
@@ -436,6 +527,25 @@ class DrawFragment : Fragment() {
         }
         return null
     }
+
+    @Composable
+    fun SwitchDrawingModeButton(
+        isGravityMode: Boolean,
+        onSwitchMode: () -> Unit,
+    ) {
+        Box(
+            modifier = Modifier
+                .clickable {
+                    onSwitchMode()
+                }
+        ) {
+            Icon(
+                imageVector = if (isGravityMode) Icons.Default.LocationOn else Icons.Default.Edit,
+                contentDescription = "SwitchDrawingModeButton"
+            )
+        }
+    }
+
 
 }
 
