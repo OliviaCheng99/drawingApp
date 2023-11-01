@@ -62,7 +62,6 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.cs6018.marbleemulator.mapSensorValueToDelta
 import com.example.drawApp.databinding.FragmentDrawBinding
 import kotlinx.coroutines.launch
 
@@ -262,6 +261,11 @@ class DrawFragment : Fragment() {
         )
 
         return gravityEventListener
+    }
+
+    fun mapSensorValueToDelta(sensorValue: Float): Float {
+        val multiplier = .5f // Adjust this for sensitivity
+        return sensorValue * multiplier
     }
 
 
