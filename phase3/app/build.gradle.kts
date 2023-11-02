@@ -8,6 +8,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
+
 android {
     namespace = "com.example.drawApp"
     compileSdk = 34
@@ -70,8 +72,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-runtime-testing:2.6.2")
     implementation("androidx.core:core-animation:1.0.0-rc01")
-    implementation("androidx.room:room-common:2.6.0")
-    implementation("androidx.room:room-ktx:2.6.0")
     implementation("androidx.annotation:annotation:1.7.0")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
 
@@ -83,6 +83,7 @@ dependencies {
 //    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 //    testImplementation("androidx.room:room-testing:2.6.0")
     implementation("org.mockito:mockito-core:5.6.0")
+    implementation("com.google.android.datatransport:transport-runtime:3.1.9")
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     androidTestImplementation("org.mockito:mockito-android:5.6.0")
@@ -102,7 +103,7 @@ dependencies {
 // Additional dependencies for Jetpack Compose UI testing
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
 // Dependencies for Fragment testing
-    androidTestImplementation("androidx.fragment:fragment-testing:1.6.1")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.6.2")
 // Mockito for Android to mock Android-specific classes (like ViewModel)
     androidTestImplementation("org.mockito:mockito-android:5.6.0")
 
@@ -111,7 +112,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     //Fragment stuff
-    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // compose stuff
     implementation("androidx.compose.ui:ui-tooling-android:1.5.4")
@@ -122,8 +123,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
     // navigation stuff
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4") // stable version
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5") // stable version
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
     // Room stuff
     ksp("androidx.room:room-compiler:2.6.0")
@@ -138,4 +139,10 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
     implementation("com.google.firebase:firebase-analytics")
+
+    // ktor client
+    implementation("io.ktor:ktor-client-core:2.3.5")
+    implementation("io.ktor:ktor-client-cio:2.3.5")
+    implementation("io.ktor:ktor-client-logging:2.3.5")
+    implementation("io.ktor:ktor-client-serialization:2.3.5")
 }

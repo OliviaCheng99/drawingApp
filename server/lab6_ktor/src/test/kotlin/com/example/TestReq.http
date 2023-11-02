@@ -1,0 +1,53 @@
+DELETE http://localhost:8080/posts/1
+Content-Type: application/json
+
+
+###
+POST http://localhost:8080/posts
+Content-Type: multipart/form-data; boundary=AppBoundary
+
+--AppBoundary
+Content-Disposition: form-data; name="uid"
+Content-Type: text/plain
+
+user23456
+--AppBoundary
+Content-Disposition: form-data; name="imageName"
+Content-Type: text/plain
+
+myImage2.png
+--AppBoundary
+Content-Disposition: form-data; name="decodedImage"; filename="myImage2.png"
+Content-Type: image/png
+
+< /Users/tacodaddy/drawingApp/server/lab6_ktor/src/testImages/eraser1.png
+--AppBoundary--
+
+
+###
+POST http://localhost:8080/posts
+Content-Type: multipart/form-data; boundary=AppBoundary
+
+--AppBoundary
+Content-Disposition: form-data; name="uid"
+Content-Type: text/plain
+
+user12345
+--AppBoundary
+Content-Disposition: form-data; name="imageName"
+Content-Type: text/plain
+
+myImage.jpg
+--AppBoundary
+Content-Disposition: form-data; name="decodedImage"; filename="myImage.jpg"
+Content-Type: image/png
+
+< /Users/tacodaddy/drawingApp/server/lab6_ktor/src/testImages/thumb.png
+--AppBoundary--
+
+###
+
+GET http://localhost:8080/posts
+Accept: application/json
+
+

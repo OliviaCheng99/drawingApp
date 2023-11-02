@@ -63,7 +63,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.drawApp.databinding.FragmentDrawBinding
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.post
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.utils.EmptyContent.contentType
+import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
+import io.ktor.util.InternalAPI
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 
 
 class DrawFragment : Fragment() {
@@ -454,6 +465,21 @@ class DrawFragment : Fragment() {
                 }) {
                     Text("Share Images")
                 }
+
+
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    viewLifecycleOwner.lifecycleScope.launch {// maybe not necessary to handle it in coroutine here
+                        //todo: I hard code here just fot testing
+                        val imgToSend = binding.customView.getBitmap()
+                        val uid = "user123" // hard code
+                        val imgName = System.currentTimeMillis().toString()
+                        postImage(bitmapToByteArray(imgToSend), uid, "$imgName.png")
+
+                    }
+                }) {
+                    Text("Share Moments")
+                }
             }
         }
     }
@@ -549,6 +575,28 @@ class DrawFragment : Fragment() {
             )
         }
     }
+
+    //todo: maybe the response should contain the image id(unique), so user can delete it as wish
+    @OptIn(InternalAPI::class)
+    suspend fun postImage(image: ByteArray, uid:String, fileName: String): HttpResponse {
+        return KtorHttpClient.httpClient.post("http://10.0.2.2:8080/posts") {
+            body = MultiPartFormDataContent(formData {
+                append("file", image, Headers.build {
+                    append(HttpHeaders.ContentDisposition, "filename=$fileName")
+                    append(HttpHeaders.ContentType, "image/png")
+                })
+                append("uid",uid)
+            })
+        }
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
+
 
 
 }

@@ -25,6 +25,11 @@
         android:id="@+id/drawingListFragment"
         android:name="com.example.drawApp.DrawingListFragment"
         android:label="Savings"
-        tools:layout="@layout/fragment_drawing_list">
-    </fragment>
+        tools:layout="@layout/fragment_drawing_list"/>
+
+    <fragment
+        android:id="@+id/momentsFragment"
+        android:name="com.example.drawApp.MomentsFragment"
+        android:label="Moments"
+        tools:layout="@layout/fragment_moments"/>
 </navigation>
