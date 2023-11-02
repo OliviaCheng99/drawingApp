@@ -3,7 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/drawFragment">
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.drawApp.ui.login.GoogleLoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/google_login_fragment" >
+        <action
+            android:id="@+id/login_redirect"
+            app:destination="@id/drawFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/drawFragment"
@@ -17,5 +27,4 @@
         android:label="Savings"
         tools:layout="@layout/fragment_drawing_list">
     </fragment>
-
 </navigation>

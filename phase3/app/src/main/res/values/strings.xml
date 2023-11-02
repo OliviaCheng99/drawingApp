@@ -20,6 +20,12 @@
         <item>Rectangle</item>
         <item>Oval</item>
     </string-array>
+    <!-- Strings related to login -->
+    <string name="action_sign_in">Google Login</string>
+    <string name="action_sign_in_short">Login in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="sign_out">Log out</string>
 
 </resources>
 
