@@ -63,18 +63,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.drawApp.databinding.FragmentDrawBinding
+import io.ktor.client.call.body
+import io.ktor.client.call.receive
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readBytes
 import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import io.ktor.util.InternalAPI
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 
 class DrawFragment : Fragment() {
@@ -577,18 +584,80 @@ class DrawFragment : Fragment() {
     }
 
     //todo: maybe the response should contain the image id(unique), so user can delete it as wish
+//    @OptIn(InternalAPI::class)
+//    suspend fun postImage(image: ByteArray, uid:String, fileName: String): HttpResponse {
+//        return KtorHttpClient.httpClient.post("http://10.0.2.2:8080/posts") {
+//            body = MultiPartFormDataContent(formData {
+//                append("file", image, Headers.build {
+//                    append(HttpHeaders.ContentDisposition, "filename=$fileName")
+//                    append(HttpHeaders.ContentType, "image/png")
+//                })
+//                append("uid",uid)
+//            })
+//        }
+//    }
+
     @OptIn(InternalAPI::class)
-    suspend fun postImage(image: ByteArray, uid:String, fileName: String): HttpResponse {
-        return KtorHttpClient.httpClient.post("http://10.0.2.2:8080/posts") {
+    suspend fun postImage(image: ByteArray, uid: String, fileName: String): String {
+        val response = KtorHttpClient.httpClient.post("http://10.0.2.2:8080/posts") {
             body = MultiPartFormDataContent(formData {
                 append("file", image, Headers.build {
                     append(HttpHeaders.ContentDisposition, "filename=$fileName")
                     append(HttpHeaders.ContentType, "image/png")
                 })
-                append("uid",uid)
+                append("uid", uid)
             })
         }
+
+        if (response.status.isSuccess()) {
+            val imageId =
+                response.body<String>() // Assuming the server responds with the unique image ID
+            return imageId
+        } else {
+            throw IOException("Failed to post the image to the server")
+        }
     }
+
+
+    @OptIn(InternalAPI::class)
+    suspend fun getImages(uid: String): List<ByteArray> {
+        val response = KtorHttpClient.httpClient.get("http://10.0.2.2:8080/images?uid=$uid")
+        if (response.status.isSuccess()) {
+            val images = mutableListOf<ByteArray>()
+            val responseData = response.body<String>()
+            // Parse the response data to get image bytes and convert to ByteArray
+            // This will depend on the response format from your server
+            // For example, if your server returns a list of image URLs, you would download and convert them to ByteArray
+            // Here's a simplified example for demonstration purposes:
+            for (imageUrl in responseData.split(",")) {
+                val imageBytes = downloadImage(imageUrl)
+                images.add(imageBytes)
+            }
+            return images
+        } else {
+            throw IOException("Failed to fetch images from the server")
+        }
+    }
+
+    // Function to download an image from a URL and convert it to ByteArray
+    private suspend fun downloadImage(imageUrl: String): ByteArray {
+        val imageResponse = KtorHttpClient.httpClient.get(imageUrl)
+        if (imageResponse.status.isSuccess()) {
+            return imageResponse.readBytes()
+        } else {
+            throw IOException("Failed to download image from the server")
+        }
+    }
+
+
+    @OptIn(InternalAPI::class)
+    suspend fun deleteImage(uid: String): HttpResponse {
+        return KtorHttpClient.httpClient.delete("http://10.0.2.2:8080/images/$uid")
+    }
+
+
+
+
 
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
