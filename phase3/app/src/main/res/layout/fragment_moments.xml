@@ -5,19 +5,9 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/drawingsHeaderText"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view_moments"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Moments"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/momentsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:overScrollMode="never" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

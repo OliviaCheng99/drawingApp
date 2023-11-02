@@ -30,7 +30,7 @@ fun Application.configureResources() {
                             val path = it[Post.imagePath]
                             val imageBytes: ByteArray = File(path).readBytes()
                             val encodedImg = Base64.getEncoder().encodeToString(imageBytes)
-                            PostDataGet( it[Post.id].value, it[Post.postTime], encodedImg)
+                            PostDataGet( it[Post.id].value, it[Post.uid], it[Post.postTime], encodedImg)
                         }
                 }
             )
@@ -112,26 +112,27 @@ fun Application.configureResources() {
             }
         }
 
-        delete("/posts/{imageId}") {
-            val idParam = call.parameters["imageId"]
-            val intId = idParam?.toIntOrNull()
+        delete("/posts/{postTiming}") {
+            val idParam = call.parameters["postTiming"]
+            print(idParam)
+            val longTiming = idParam?.toLongOrNull()
             var deleteCount = 0
-            if (intId != null) {
+            if (longTiming != null) {
                 newSuspendedTransaction(Dispatchers.IO, DBSettings.db) {
                     //delete image
-                    val path = Post.select { Post.id eq EntityID(intId, Post) }
+                    val path = Post.select { Post.postTime eq longTiming}
                         .map { it[Post.imagePath] }.first()
                     //delete image from file
                     File(path).delete()
                     // dele from database
-                    deleteCount = Post.deleteWhere { Post.id eq EntityID(intId, Post) }
+                    deleteCount = Post.deleteWhere { Post.postTime eq longTiming }
                 }
             }else{
                 call.respond(HttpStatusCode.BadRequest, "Invalid ID")
             }
 
             if (deleteCount > 0) {
-                call.respondText("Post deleted with id $intId")
+                call.respondText("Post deleted with post time:  $longTiming")
             }else{
                 call.respond(HttpStatusCode.NotFound, "Post not found")
             }
@@ -142,6 +143,6 @@ fun Application.configureResources() {
 }
 
 // for get method
-@Serializable data class PostDataGet(val id: Int, val time: Long, val imageBytes: String)
+@Serializable data class PostDataGet(val id: Int, val userId: String, val time: Long, val imageBytes: String)
 // for delete method
 //@Serializable data class PostDataDel(val id: Int, val imageName: String, val time: Long, val imageBytes: String)
