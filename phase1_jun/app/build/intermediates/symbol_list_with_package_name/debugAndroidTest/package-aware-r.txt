@@ -1,3 +1,0 @@
-com.example.customviewdemo.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme
