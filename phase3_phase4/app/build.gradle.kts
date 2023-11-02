@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
 }
 
 
@@ -141,8 +142,16 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     // ktor client
-    implementation("io.ktor:ktor-client-core:2.3.5")
-    implementation("io.ktor:ktor-client-cio:2.3.5")
-    implementation("io.ktor:ktor-client-logging:2.3.5")
-    implementation("io.ktor:ktor-client-serialization:2.3.5")
+    val ktorClient = "2.3.5"
+    implementation("io.ktor:ktor-client-core:$ktorClient")
+    implementation("io.ktor:ktor-client-cio:$ktorClient")
+    implementation("io.ktor:ktor-client-logging:$ktorClient")
+    implementation("io.ktor:ktor-client-serialization:$ktorClient")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorClient")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorClient")
+
+    val serialization_version = "1.3.0"
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
+
+
 }

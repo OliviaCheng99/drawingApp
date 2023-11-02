@@ -117,10 +117,10 @@ class CustomView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun clearDrawing() {
         if (::bitmap.isInitialized) {
-            bitmap.eraseColor(Color.TRANSPARENT) // Clear the bitmap content
+            bitmap.eraseColor(Color.WHITE) // Clear the bitmap content
         }
         if (::bitmapCanvas.isInitialized) {
-            bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+            bitmapCanvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR)
         }
         invalidate()
     }

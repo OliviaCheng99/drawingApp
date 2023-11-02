@@ -619,52 +619,12 @@ class DrawFragment : Fragment() {
     }
 
 
-    @OptIn(InternalAPI::class)
-    suspend fun getImages(uid: String): List<ByteArray> {
-        val response = KtorHttpClient.httpClient.get("http://10.0.2.2:8080/images?uid=$uid")
-        if (response.status.isSuccess()) {
-            val images = mutableListOf<ByteArray>()
-            val responseData = response.body<String>()
-            // Parse the response data to get image bytes and convert to ByteArray
-            // This will depend on the response format from your server
-            // For example, if your server returns a list of image URLs, you would download and convert them to ByteArray
-            // Here's a simplified example for demonstration purposes:
-            for (imageUrl in responseData.split(",")) {
-                val imageBytes = downloadImage(imageUrl)
-                images.add(imageBytes)
-            }
-            return images
-        } else {
-            throw IOException("Failed to fetch images from the server")
-        }
-    }
-
-    // Function to download an image from a URL and convert it to ByteArray
-    private suspend fun downloadImage(imageUrl: String): ByteArray {
-        val imageResponse = KtorHttpClient.httpClient.get(imageUrl)
-        if (imageResponse.status.isSuccess()) {
-            return imageResponse.readBytes()
-        } else {
-            throw IOException("Failed to download image from the server")
-        }
-    }
-
-
-    @OptIn(InternalAPI::class)
-    suspend fun deleteImage(uid: String): HttpResponse {
-        return KtorHttpClient.httpClient.delete("http://10.0.2.2:8080/images/$uid")
-    }
-
 
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
     }
-
-
-
-
 }
 
 
