@@ -656,9 +656,6 @@ class DrawFragment : Fragment() {
     }
 
 
-
-
-
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
