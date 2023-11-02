@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 
@@ -131,12 +132,17 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.0")
     implementation("androidx.room:room-runtime:2.6.0")
 
+    // Google Auth
+    implementation("com.firebaseui:firebase-ui-auth:8.0.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
     // ktor client
     implementation("io.ktor:ktor-client-core:2.3.5")
     implementation("io.ktor:ktor-client-cio:2.3.5")
     implementation("io.ktor:ktor-client-logging:2.3.5")
     implementation("io.ktor:ktor-client-serialization:2.3.5")
-
-
-
 }
