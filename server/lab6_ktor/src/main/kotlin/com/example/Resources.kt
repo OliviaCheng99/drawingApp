@@ -30,7 +30,7 @@ fun Application.configureResources() {
                             val path = it[Post.imagePath]
                             val imageBytes: ByteArray = File(path).readBytes()
                             val encodedImg = Base64.getEncoder().encodeToString(imageBytes)
-                            PostDataGet( it[Post.id].value,it[Post.imageName], it[Post.postTime], encodedImg)
+                            PostDataGet( it[Post.id].value, it[Post.postTime], encodedImg)
                         }
                 }
             )
@@ -73,34 +73,35 @@ fun Application.configureResources() {
         post("/posts") {
             val multipart = call.receiveMultipart()
             var uid: String? = null
-            var imageName: String? = null
             var imageBytes: ByteArray? = null
             multipart.forEachPart { part ->
                 when (part) {
                     is PartData.FormItem -> {
                         when (part.name) {
                             "uid" -> uid = part.value
-                            "imageName" -> imageName = part.value
                         }
                     }
                     is PartData.FileItem -> {
-                        imageBytes = part.streamProvider().readBytes()
+//                        if (part.name == "image") {
+                            imageBytes = part.streamProvider().readBytes()
+//                        }
                     }
 
                     else -> {}
                 }
             }
 
-            if (uid!=null && imageName!=null && imageBytes!=null) {
+            if (uid!=null && imageBytes!=null) {
                 withContext(Dispatchers.IO) {
-                    val path = "src/images/$imageName"
-                    File(path).writeBytes(imageBytes!!)
+                    val time = System.currentTimeMillis()
+                    val path = "src/images/$time.png"
+                    File(path).writeBytes(imageBytes!!) // write image to file
 
                     newSuspendedTransaction {
+                        // insert to database
                         Post.insert {
-                            it[Post.imagePath] = "src/images/$imageName"
-                            it[Post.imageName] = imageName!!
-                            it[Post.postTime] = System.currentTimeMillis()
+                            it[Post.imagePath] = path
+                            it[Post.postTime] = time
                             it[Post.uid] = uid!!
                         }
                     }
@@ -141,6 +142,6 @@ fun Application.configureResources() {
 }
 
 // for get method
-@Serializable data class PostDataGet(val id: Int, val imageName: String, val time: Long, val imageBytes: String)
+@Serializable data class PostDataGet(val id: Int, val time: Long, val imageBytes: String)
 // for delete method
 //@Serializable data class PostDataDel(val id: Int, val imageName: String, val time: Long, val imageBytes: String)

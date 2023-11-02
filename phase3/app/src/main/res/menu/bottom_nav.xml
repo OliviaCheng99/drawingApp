@@ -6,5 +6,8 @@
     <item
         android:id="@+id/savings"
         android:title="Savings" />
+    <item
+        android:id="@+id/moments"
+        android:title="Moments" />
 
 </menu>

@@ -27,6 +27,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.moments->{
+                    findNavController(R.id.fragmentContainerView).navigate(R.id.momentsFragment)
+                    true
+                }
+
                 else -> false
             }
         }

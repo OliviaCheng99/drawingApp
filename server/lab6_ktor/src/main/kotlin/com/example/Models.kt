@@ -8,7 +8,6 @@ import java.sql.Timestamp
 
 
 object Post: IntIdTable(){ // object for singleton table
-    val imageName = varchar("name", 255)
     val imagePath = varchar("path", 255)
     val uid = varchar("uid", 255)
     val postTime = long("postTime")
